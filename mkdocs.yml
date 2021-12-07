@@ -1,11 +1,22 @@
 site_name: Learning System Programming
 site_author: 'zhoujiagen@gmail.com'
 copyright: MIT
-repo_name: learning-system-programming
-repo_url: https://github.com/zhoujiagen/learning-system-programming
+repo_name: learning-algorithms
+repo_url: https://github.com/zhoujiagen/learning-algorithms
 
 nav:
     - Home: index.md
+    - 'An Introduction to the Analysis of Algorithms':
+      - 'Home': algorithms_analysis/index.md
+      - '1. Analysis of Algorithms': algorithms_analysis/01-analysis-of-algorithms.md
+      - '2. Recurrence Relations': algorithms_analysis/02-recurrence-relations.md
+      - '3. Generating Functions': algorithms_analysis/03-generating-functions.md
+      - '4. Asymptotic Approximations': algorithms_analysis/04-asymptotic-approximations.md
+      - '5. Analytic Combinatorics': algorithms_analysis/05-analytic-combinatorics.md
+      - '6. Trees': algorithms_analysis/06-trees.md
+      - '7. Permutations': algorithms_analysis/07-permutations.md
+      - '8. Strings and Tries': algorithms_analysis/08-strings-and-tries.md
+      - '9. Words and Mappings': algorithms_analysis/09-words-and-mappings.md
     - 'TACP':
       - 'Volume 1: Fundamental Algorithms': TACP/TACP-vol1.md
       - 'Volume 2: Seminumerical Algorithms': TACP/TACP-vol2.md
