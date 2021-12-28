@@ -1,4 +1,4 @@
-site_name: Learning System Programming
+site_name: Learning Algorithms
 site_author: 'zhoujiagen@gmail.com'
 copyright: MIT
 repo_name: learning-algorithms
@@ -46,6 +46,9 @@ nav:
         - '18. Transactional Memory': concurrency-parallel/tamp/18-transactional-memory.md
       - 'Parallel Programming':
         - 'Primitives': concurrency-parallel/parallel-programming/primitives.md
+    - 'Distributed Algorithms':
+      - 'Distributed Algorithms': distributed/DA.md
+      - 'Introduction to Reliable and Secure Distributed Programming': distributed/IRSDP.md
 
 
 #theme: readthedocs
