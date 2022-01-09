@@ -21,6 +21,26 @@ nav:
       - 'Volume 1: Fundamental Algorithms': TACP/TACP-vol1.md
       - 'Volume 2: Seminumerical Algorithms': TACP/TACP-vol2.md
       - 'Volume 3: Sorting and Searching': TACP/TACP-vol3.md
+    - Compiler:
+      - 'Home': compiler/index.md
+      - 'References': compiler/Engineering-a-Compiler-refs.md
+      - 'Flex and Bison':
+        - 'Tutorial': compiler/flex_bison/flex_and_bison.md
+        - 'Flex Specification': compiler/flex_bison/flex_spec.md
+        - 'Bison Specification': compiler/flex_bison/bison_spec.md
+      - 'ANTLR': compiler/antlr.md
+      - 'JavaCC': compiler/javacc.md
+      - LLVM:
+        - 'Home': compiler/llvm/llvm.md
+        - 'LLVM Paper': compiler/llvm/llvm-paper.md
+        - 'LLVM Essentials': compiler/llvm/llvm-essentials.md
+        - 'LLVM Core Libraries': compiler/llvm/llvm-core-libraries.md
+      - JVM:
+        - Home: compiler/jvm/index.md
+        - 'JVM Tool Interface': compiler/jvm/JVMTI.md
+        - 'HotSpot':
+          - 'Concepts': compiler/jvm/hotspot/hotspot-concepts.md
+          - 'Codes': compiler/jvm/hotspot/hotspot-codes.md
     - 'Concurrency':
       - Home: concurrency-parallel/index.md
       - 'Java Concurrency': concurrency-parallel/java-concurrency.md
