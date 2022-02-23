@@ -28,8 +28,6 @@ nav:
         - 'Tutorial': compiler/flex_bison/flex_and_bison.md
         - 'Flex Specification': compiler/flex_bison/flex_spec.md
         - 'Bison Specification': compiler/flex_bison/bison_spec.md
-      - 'ANTLR': compiler/antlr.md
-      - 'JavaCC': compiler/javacc.md
       - LLVM:
         - 'Home': compiler/llvm/llvm.md
         - 'LLVM Paper': compiler/llvm/llvm-paper.md
@@ -37,6 +35,8 @@ nav:
         - 'LLVM Core Libraries': compiler/llvm/llvm-core-libraries.md
       - JVM:
         - Home: compiler/jvm/index.md
+        - 'JavaCC': compiler/jvm/javacc.md
+        - 'ANTLR': compiler/jvm/antlr.md
         - 'JVM Tool Interface': compiler/jvm/JVMTI.md
         - 'HotSpot':
           - 'Concepts': compiler/jvm/hotspot/hotspot-concepts.md
