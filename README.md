@@ -1,8 +1,8 @@
 # Learning Algorithms
 
-## TACP: The The Art of Computer Programming
+## TACP: The Art of Computer Programming
 
-- [The The Art of Computer Programming, Volume 1: Fundamental Algorithms](./docs/TACP/TACP-vol1.md)
+- [The Art of Computer Programming, Volume 1: Fundamental Algorithms](./docs/TACP/TACP-vol1.md)
 - [The Art of Computer Programming, Volume 2: Seminumerical Algorithms](./docs/TACP/TACP-vol1.md)
 - [The Art of Computer Programming, The: Volume 3: Sorting and Searching](./docs/TACP/TACP-vol1.md)
 

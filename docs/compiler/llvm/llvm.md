@@ -2,7 +2,8 @@
 
 |时间|内容|
 |:---|:---|
-|20210818|kick off.|
+|2021-08-18| kick off. |
+|2022-02-23| update: notes of project directories. |
 
 ## 术语
 
@@ -24,6 +25,38 @@
 
 ### 子项目
 
+```
+llvm-project$ tree -L 1
+.
+├── CONTRIBUTING.md
+├── README.md
+├── SECURITY.md
+├── bolt                      // BOLT is a post-link optimizer developed to speed up large applications
+├── clang                     // C Language Family Front-end
+├── clang-tools-extra         // Clang Tools repository
+├── cmake                     // LLVM Common CMake Utils
+├── compiler-rt               // compiler support routines
+├── cross-project-tests       // for tests that require access to multiple projects across LLVM (e.g. clang, lld and lldb).
+├── flang                     // Flang is a ground-up implementation of a Fortran front end written in modern C++
+├── libc                      // llvm-libc, a retargetable implementation of the C standard library
+├── libclc                    // an implementation of the OpenCL C programming language
+├── libcxx                    // an implementation of the C++ standard library libc++, targeting C++11 and above
+├── libcxxabi                 // libc++ abi
+├── libunwind                 // an implementation of the interface defined by the HP libunwind project
+├── lld                       // LLVM Linker
+├── lldb                      // The LLDB Debugger
+├── llvm                      // The LLVM Compiler Infrastructure
+├── llvm-libgcc               // for who want to replace libgcc with compiler-rt and libunwind
+├── mlir                      // Multi-Level Intermediate Representation
+├── openmp                    // the LLVM OpenMP Libraries
+├── polly                     // Polyhedral optimizations for LLVM
+├── pstl                      // Parallel STL
+├── runtimes                  // building LLVM runtime sub-projects
+├── test                      // nothing
+├── third-party               // benchmark: A library to benchmark code snippets, similar to unit tests
+└── utils                     // clang-format.sh, Bazel build system
+```
+
 |subproject           | Description|
 |:---                 |:---|
 | LLVM Core           | The LLVM Core libraries provide a modern source- and target-independent optimizer, along with code generation support for many popular CPUs (as well as some less common ones!) These libraries are built around a well specified code representation known as the LLVM intermediate representation ("LLVM IR"). The LLVM Core libraries are well documented, and it is particularly easy to invent your own language (or port an existing compiler) to use LLVM as an optimizer and code generator.|
@@ -40,21 +73,299 @@
 
 ### llvm-project/llvm
 
---8<--
-compiler/llvm/snippets/llvm-code-dir.md
---8<--
+```
+.
+├── CMakeLists.txt
+├── CODE_OWNERS.TXT
+├── CREDITS.TXT
+├── LICENSE.TXT
+├── README.txt
+├── RELEASE_TESTERS.TXT
+├── benchmarks
+│   ├── CMakeLists.txt
+│   └── DummyYAML.cpp
+├── bindings                            // provides language bindings for Go, OCaml and Python
+│   ├── README.txt
+│   ├── go
+│   ├── ocaml
+│   └── python
+├── cmake
+│   ├── README
+│   ├── config-ix.cmake
+│   ├── config.guess
+│   ├── dummy.cpp
+│   ├── modules                         // build configuration for llvm user defined options
+│   ├── nsis_icon.ico
+│   ├── nsis_logo.bmp
+│   ├── platforms                       // toolchain configuration for Android NDK, iOS systems and non-Windows hosts to target MSVC
+│   └── unwind.h
+├── configure
+├── docs
+├── examples
+│   ├── BrainF
+│   ├── Bye
+│   ├── CMakeLists.txt
+│   ├── ExceptionDemo
+│   ├── Fibonacci
+│   ├── HowToUseJIT
+│   ├── HowToUseLLJIT
+│   ├── IRTransforms
+│   ├── Kaleidoscope                    // Kaleidoscope language tutorial
+│   ├── ModuleMaker
+│   ├── OrcV2Examples
+│   ├── ParallelJIT
+│   └── SpeculativeJIT
+├── include
+│   ├── llvm                            // All LLVM-specific header files, subdirectories for different portions of LLVM: Analysis, CodeGen, etc
+│   └── llvm-c                          // ???
+├── lib
+│   ├── Analysis                        // A variety of program analyses, such as Call Graphs, Induction Variables, Natural Loop Identification, etc
+│   ├── AsmParser                       // Source code for the LLVM assembly language parser library
+│   ├── BinaryFormat
+│   ├── Bitcode                         // Code for reading and writing bitcode
+│   ├── Bitstream
+│   ├── CMakeLists.txt
+│   ├── CodeGen                         // The major parts of the code generator: Instruction Selector, Instruction Scheduling, and Register Allocation
+│   ├── DWARFLinker
+│   ├── DWP
+│   ├── DebugInfo
+│   ├── Debuginfod
+│   ├── Demangle
+│   ├── ExecutionEngine                 // Libraries for directly executing bitcode at runtime in interpreted and JIT-compiled scenarios
+│   ├── Extensions
+│   ├── FileCheck
+│   ├── Frontend
+│   ├── FuzzMutate
+│   ├── Fuzzer
+│   ├── IR                              // Core LLVM source files that implement core classes like Instruction and BasicBlock
+│   ├── IRReader
+│   ├── InterfaceStub
+│   ├── LTO
+│   ├── LineEditor
+│   ├── Linker
+│   ├── MC                              // The libraries represent and process code at machine code level. Handles assembly and object-file emission
+│   ├── MCA
+│   ├── ObjCopy
+│   ├── Object
+│   ├── ObjectYAML
+│   ├── Option
+│   ├── Passes
+│   ├── ProfileData
+│   ├── Remarks
+│   ├── Support                         // corresponding to the header files in llvm/include/ADT/ and llvm/include/Support/
+│   ├── TableGen
+│   ├── Target                          // Files describing target architectures for code generation
+│   ├── Testing
+│   ├── TextAPI
+│   ├── ToolDrivers
+│   ├── Transforms                      // IR-to-IR program transformations
+│   ├── WindowsDriver
+│   ├── WindowsManifest
+│   └── XRay
+├── llvm.spec.in
+├── llvm.txt
+├── projects                            // Projects not strictly part of LLVM but shipped with LLVM
+│   └── CMakeLists.txt
+├── resources
+│   └── windows_version_resource.rc
+├── runtimes
+│   └── CMakeLists.txt
+├── test                                // Feature and regression tests and other sanity checks on LLVM infrastructure
+├── tools                               // Executables built out of the libraries
+│   ├── CMakeLists.txt
+│   ├── bugpoint                        // debug optimization passes or code generation backends by narrowing down the given test case to the minimum number of passes and/or instructions that still cause a problem, whether it is a crash or miscompilation
+│   ├── bugpoint-passes
+│   ├── dsymutil
+│   ├── gold
+│   ├── llc                             // the LLVM backend compiler, which translates LLVM bitcode to a native code assembly file
+│   ├── lli                             // the LLVM interpreter, which can directly execute LLVM bitcode (slowly)
+│   ├── llvm-ar                         // The archiver produces an archive containing the given LLVM bitcode files
+│   ├── llvm-as                         // The assembler transforms the human readable LLVM assembly to LLVM bitcode
+│   ├── llvm-as-fuzzer
+│   ├── llvm-bcanalyzer
+│   ├── llvm-c-test
+│   ├── llvm-cat
+│   ├── llvm-cfi-verify
+│   ├── llvm-config
+│   ├── llvm-cov
+│   ├── llvm-cvtres
+│   ├── llvm-cxxdump
+│   ├── llvm-cxxfilt
+│   ├── llvm-cxxmap
+│   ├── llvm-debuginfod-find
+│   ├── llvm-diff
+│   ├── llvm-dis                        // The disassembler transforms the LLVM bitcode to human readable LLVM assembly
+│   ├── llvm-dis-fuzzer
+│   ├── llvm-dlang-demangle-fuzzer
+│   ├── llvm-dwarfdump
+│   ├── llvm-dwp
+│   ├── llvm-exegesis
+│   ├── llvm-extract
+│   ├── llvm-go
+│   ├── llvm-gsymutil
+│   ├── llvm-ifs
+│   ├── llvm-isel-fuzzer
+│   ├── llvm-itanium-demangle-fuzzer
+│   ├── llvm-jitlink
+│   ├── llvm-jitlistener
+│   ├── llvm-libtool-darwin
+│   ├── llvm-link                       //  links multiple LLVM modules into a single program
+│   ├── llvm-lipo
+│   ├── llvm-lto
+│   ├── llvm-lto2
+│   ├── llvm-mc
+│   ├── llvm-mc-assemble-fuzzer
+│   ├── llvm-mc-disassemble-fuzzer
+│   ├── llvm-mca
+│   ├── llvm-microsoft-demangle-fuzzer  
+│   ├── llvm-ml
+│   ├── llvm-modextract
+│   ├── llvm-mt
+│   ├── llvm-nm
+│   ├── llvm-objcopy
+│   ├── llvm-objdump
+│   ├── llvm-opt-fuzzer
+│   ├── llvm-opt-report
+│   ├── llvm-pdbutil
+│   ├── llvm-profdata
+│   ├── llvm-profgen
+│   ├── llvm-rc
+│   ├── llvm-readobj
+│   ├── llvm-reduce
+│   ├── llvm-remark-size-diff
+│   ├── llvm-rtdyld
+│   ├── llvm-rust-demangle-fuzzer
+│   ├── llvm-shlib
+│   ├── llvm-sim
+│   ├── llvm-size
+│   ├── llvm-special-case-list-fuzzer
+│   ├── llvm-split
+│   ├── llvm-stress
+│   ├── llvm-strings
+│   ├── llvm-symbolizer
+│   ├── llvm-tapi-diff
+│   ├── llvm-tli-checker
+│   ├── llvm-undname
+│   ├── llvm-xray
+│   ├── llvm-yaml-numeric-parser-fuzzer
+│   ├── llvm-yaml-parser-fuzzer
+│   ├── lto
+│   ├── msbuild
+│   ├── obj2yaml
+│   ├── opt                             // reads LLVM bitcode, applies a series of LLVM transformations, and outputs the resultant bitcode
+│   ├── opt-viewer
+│   ├── remarks-shlib
+│   ├── sancov
+│   ├── sanstats
+│   ├── split-file
+│   ├── verify-uselistorder
+│   ├── vfabi-demangle-fuzzer
+│   ├── xcode-toolchain
+│   └── yaml2obj
+├── unittests
+└── utils                               // Utilities for working with LLVM source code
+    ├── DSAclean.py
+    ├── DSAextract.py
+    ├── FileCheck
+    ├── GenLibDeps.pl
+    ├── GetSourceVersion
+    ├── KillTheDoctor
+    ├── LLVMVisualizers
+    ├── Misc
+    ├── PerfectShuffle
+    ├── Reviewing
+    ├── TableGen                        // Contains the tool used to generate register descriptions, instruction set descriptions, and even assemblers from common TableGen description files
+    ├── Target
+    ├── UpdateCMakeLists.pl
+    ├── UpdateTestChecks
+    ├── abtest.py
+    ├── add_argument_names.py
+    ├── bisect
+    ├── bisect-skip-count
+    ├── bugpoint
+    ├── bugpoint_gisel_reducer.py
+    ├── check-each-file
+    ├── check_ninja_deps.py
+    ├── chunk-print-before-all.py
+    ├── clang-parse-diagnostics-file
+    ├── codegen-diff                    // finds differences between code that LLC generates and code that LLI generates
+    ├── collect_and_build_with_pgo.py
+    ├── convert-constraint-log-to-z3.py
+    ├── count
+    ├── countloc.sh
+    ├── create_ladder_graph.py
+    ├── crosstool
+    ├── demangle_tree.py
+    ├── docker
+    ├── emacs                           // Emacs and XEmacs syntax highlighting for LLVM assembly files and TableGen description files
+    ├── extract-section.py
+    ├── extract_symbols.py
+    ├── extract_vplan.py
+    ├── findmisopt
+    ├── findoptdiff
+    ├── findsym.pl
+    ├── fpcmp
+    ├── gdb-scripts
+    ├── getsrcs.sh                      // Finds and outputs all non-generated source files
+    ├── git
+    ├── gn
+    ├── indirect_calls.py
+    ├── jedit
+    ├── kate
+    ├── lint
+    ├── lit
+    ├── lldbDataFormatters.py
+    ├── llvm-compilers-check
+    ├── llvm-gisel-cov.py
+    ├── llvm-lit
+    ├── llvm-locstats
+    ├── llvm-mca-compare.py
+    ├── llvm-native-gxx
+    ├── llvm-original-di-preservation.py
+    ├── llvm.grm
+    ├── llvmdo
+    ├── llvmgrep                        // Performs an egrep -H -n on each source file in LLVM
+    ├── merge-stats.py
+    ├── not
+    ├── pipeline.py
+    ├── prepare-code-coverage-artifact.py
+    ├── reduce_pipeline.py
+    ├── reduce_pipeline_test
+    ├── release
+    ├── remote-exec.py
+    ├── revert_checker.py
+    ├── revert_checker_test.py
+    ├── rsp_bisect.py
+    ├── rsp_bisect_test
+    ├── sanitizers
+    ├── schedcover.py
+    ├── shuffle_fuzz.py
+    ├── shuffle_select_fuzz_tester.py
+    ├── sort_includes.py
+    ├── sysroot.py
+    ├── testgen
+    ├── textmate
+    ├── unicode-case-fold.py
+    ├── unittest
+    ├── update_analyze_test_checks.py
+    ├── update_cc_test_checks.py
+    ├── update_llc_test_checks.py
+    ├── update_mca_test_checks.py
+    ├── update_mir_test_checks.py
+    ├── update_test_checks.py
+    ├── update_test_prefix.py
+    ├── valgrind
+    ├── vim                             // vim syntax-highlighting for LLVM assembly files and TableGen description files
+    ├── vscode
+    ├── wciia.py
+    └── yaml-bench
+```
 
-### LLVM_INSTALL_PATH/lib
+- test-suite: A comprehensive correctness, performance, and benchmarking test suite for LLVM
 
---8<--
-compiler/llvm/snippets/llvm-lib-dir.md
---8<--
-
-### LLVM_INSTALL_PATH/include
-
---8<--
-compiler/llvm/snippets/llvm-include-dir.md
---8<--
+```
+https://github.com/llvm/llvm-test-suite
+```
 
 ## 使用
 
