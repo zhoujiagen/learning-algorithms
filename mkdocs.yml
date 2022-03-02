@@ -23,6 +23,7 @@ nav:
       - 'Volume 3: Sorting and Searching': TACP/TACP-vol3.md
     - Compiler:
       - 'Home': compiler/index.md
+      - 'Compilers: Principles, Techniques, and Tools': compiler/Dragon-Book.md
       - 'References': compiler/Engineering-a-Compiler-refs.md
       - 'Flex and Bison':
         - 'Tutorial': compiler/flex_bison/flex_and_bison.md

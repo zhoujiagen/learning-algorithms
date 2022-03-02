@@ -9,6 +9,7 @@
 ## Compiler
 
 - [References of Engineering a Compiler](compiler/Engineering-a-Compiler-refs.md)
+- Dragon Book: [Compilers: Principles, Techniques, and Tools](compiler/Dragon-Book.md)
 
 ### Flex, Bison
 
