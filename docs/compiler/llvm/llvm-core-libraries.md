@@ -33,12 +33,9 @@
 - **llvm-mc**: assemble instructions and generate object files(ELF, PE, MachO), disassemble the same objects
 - **lli**: an interpreter and a JIT compiler for LLVM IR
 - **llvm-link**: link several LLVM bitcodes to produce a single LLVM bitcode
-- **llvm-as**: transform LLVM IR filse(human-readable LLVM assemblies) into LLVM bitcodes
-- **llvm-dis**: decode LLVM bitcodes into LLVM assemblies
+- **llvm-as**: transform LLVM IR file(human-readable LLVM assemblies) into LLVM bitcodes, `*.ll` => `*.bc`
+- **llvm-dis**: decode LLVM bitcodes into LLVM assemblies, `*.bc` => `*.ll`
 - **llvm-config**: print LLVM compilation options
-
-`*.bc`: LLVM bitcode files
-`*.ll`: LLVM assembly files
 
 LLVM basic libraries:
 
@@ -113,8 +110,8 @@ Type
 LLVM IR有三种等价形式:
 
 - 内存中表示: `Instruction`类等;
-- 磁盘上空间紧凑形式的表示: bitcode文件;
-- 磁盘上可读文本形式的表示: LLVM汇编文件.
+- 磁盘上空间紧凑形式的表示: bitcode文件 `*.bc`;
+- 磁盘上可读文本形式的表示: LLVM汇编文件 `*.ll`.
 
 ```
 // file: sum.c

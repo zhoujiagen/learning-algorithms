@@ -371,6 +371,211 @@ https://github.com/llvm/llvm-test-suite
 
 <!-- 记录软件如何使用. -->
 
+### Versions
+
+- Windows with MSYS2
+```
+$ clang --version
+clang version 13.0.1
+Target: x86_64-w64-windows-gnu
+Thread model: posix
+InstalledDir: D:/msys64/mingw64/bin
+
+$ gcc --version
+gcc.exe (Rev9, Built by MSYS2 project) 11.2.0
+```
+
+- MacOS
+
+```
+To use the bundled libc++ please add the following LDFLAGS:
+  LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
+
+llvm is keg-only, which means it was not symlinked into /usr/local,
+because macOS already provides this software and installing another version in
+parallel can cause all kinds of trouble.
+
+If you need to have llvm first in your PATH, run:
+  echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find llvm you may need to set:
+  export LDFLAGS="-L/usr/local/opt/llvm/lib"
+  export CPPFLAGS="-I/usr/local/opt/llvm/include"
+```
+
+### Example with clang
+
+hello.c:
+
+``` c
+#include <stdio.h>
+
+int main() {
+        printf("hello world\n");
+        return 0;
+}
+```
+
+```
+# compile C file to native executable
+$ clang hello.c -o hello
+$ ./hello.exe
+hello world
+
+# compile C file to LLVM bitcode file
+$ clang -O3 -emit-llvm hello.c -c -o hello.bc
+# invoke LLVM JIT lli
+$ lli hello.bc
+JIT session error: Symbols not found: [ __mingw_vfprintf, __main ]
+D:\msys64\mingw64\bin/lli.exe: Failed to materialize symbols: { (main, { main }) }
+
+# view LLVM assembly code
+$ llvm-dis < hello.bc
+
+# LLC code generator: compile to native assembly code
+$ llc hello.bc -o hello.s
+# assemble to program
+$ gcc hello.s -o hello.native
+$ ./hello.native
+hello world
+```
+
+### Kaleidoscope example
+
+parser: Recursive Descent Parsing, Operator-Precedence Parsing[^OPP]
+
+[^OPP]: Operator-Precedence Parsing: https://en.wikipedia.org/wiki/Operator-precedence_parser
+
+- Grammar
+
+```
+# Parser
+top ::= definition | external | expression | ';'
+
+definition ::= 'def' prototype expression
+external ::= 'extern' prototype
+toplevelexpr ::= expression
+
+prototype ::= id '(' id* ')'
+
+expression ::= primary binoprhs
+
+primary
+  ::= identifierexpr
+  ::= numberexpr
+  ::= parenexpr
+
+identifierexpr
+  ::= identifier
+  ::= identifier '(' expression* ')'
+parenexpr ::= '(' expression ')'
+numberexpr ::= number
+
+binoprhs ::= ('<'|'+'|'-'|'*' primary)*
+
+# Lexer
+identifier: [a-zA-Z][a-zA-Z0-9]*
+number: [0-9.]+
+```
+
+- AST
+
+```
+/// ExprAST - Base class for all expression nodes.
+class ExprAST
+
+/// NumberExprAST - Expression class for numeric literals like "1.0".
+class NumberExprAST : public ExprAST
+
+/// VariableExprAST - Expression class for referencing a variable, like "a".
+class VariableExprAST : public ExprAST
+
+/// BinaryExprAST - Expression class for a binary operator.
+class BinaryExprAST : public ExprAST
+
+/// CallExprAST - Expression class for function calls.
+class CallExprAST : public ExprAST
+
+/// PrototypeAST - This class represents the "prototype" for a function,
+/// which captures its name, and its argument names (thus implicitly the number
+/// of arguments the function takes).
+class PrototypeAST
+```
+
+- example
+
+```
+# Compute the x'th fibonacci number.
+def fib(x)
+  if x < 3 then
+    1
+  else
+    fib(x-1)+fib(x-2)
+
+# This expression will compute the 40th number.
+fib(40)
+
+extern sin(arg);
+extern cos(arg);
+extern atan2(arg1 arg2);
+atan2(sin(.4), cos(42))
+```
+
+- Code Generation
+
+``` c++
+// llvm::LLVMContext: (opaquely) owns and manages the core "global" data of LLVM's core infrastructure
+// llvm::Module: Modules are the top level container of all other LLVM Intermediate Representation (IR) objects
+// llvm::IRBuilder: provides a uniform API for creating instructions and inserting them into a basic block
+
+static std::unique_ptr<LLVMContext> TheContext;
+static std::unique_ptr<Module> TheModule;
+static std::unique_ptr<IRBuilder<>> Builder;
+static std::map<std::string, Value *> NamedValues;
+
+static void InitializeModule() {
+  // Open a new context and module.
+  TheContext = std::make_unique<LLVMContext>();
+  TheModule = std::make_unique<Module>("my cool jit", *TheContext);
+
+  // Create a new builder for the module.
+  Builder = std::make_unique<IRBuilder<>>(*TheContext);
+}
+
+// llvm::Value: represent a SSA(Static Single Assignment) register, or SSA value
+// llvm::Function
+
+ConstantFP::get(...)
+Builder.CreateFAdd(...)
+Builder.CreateFSub(...)
+Builder.CreateFMul(...)
+Builder.CreateFCmpULT(...)
+Builder.CreateUIToFP(...)
+Type::getDoubleTy(...)
+TheModule->getFunction(...)
+Builder.CreateCall(...)
+FunctionType::get(...)
+Function::Create(...)
+BasicBlock::Create(...)
+Builder.SetInsertPoint(...)
+Builder.CreateRet(...)
+```
+
+- JIT
+
+``` c++
+static std::unique_ptr<KaleidoscopeJIT> TheJIT;
+
+llvm::InitializeNativeTarget();
+llvm::InitializeNativeTargetAsmPrinter();
+llvm::InitializeNativeTargetAsmParser();
+
+
+TheJIT->addModule(...)
+TheJIT->findSymbol(...)
+TheJIT->removeModule(...)
+```
+
 ## 数据结构和算法
 
 <!-- 描述软件中重要的数据结构和算法, 支撑过程部分的记录. -->
@@ -401,3 +606,5 @@ https://github.com/llvm/llvm-test-suite
 - [Reference](https://llvm.org/docs/Reference.html): LLVM and API reference documentation.
 
 ## 其他备注
+
+- 体系结构和平台信息: [Architecture & Platform Information for Compiler Writers](https://llvm.org/docs/CompilerWriterInfo.html)
