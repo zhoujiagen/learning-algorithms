@@ -29,6 +29,7 @@
 - [LLVM: A Compilation Framework for Lifelong Program Analysis & Transformation](compiler/llvm/llvm-paper.md)
 - [Getting Started with LLVM Core Libraries](compiler/llvm/llvm-core-libraries.md)
 - [LLVM Essentials](compiler/llvm/llvm-essentials.md)
+- [LLVM Language Reference Manual](compiler/llvm/llvm-lang-ref.md)
 
 ## Analysis of Algorithms
 

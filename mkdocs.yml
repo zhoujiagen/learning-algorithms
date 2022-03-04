@@ -33,7 +33,9 @@ nav:
         - 'Home': compiler/llvm/llvm.md
         - 'LLVM Paper': compiler/llvm/llvm-paper.md
         - 'LLVM Essentials': compiler/llvm/llvm-essentials.md
-        - 'LLVM Core Libraries': compiler/llvm/llvm-core-libraries.md
+        - 'Getting Started with LLVM Core Libraries': compiler/llvm/llvm-core-libraries.md
+        - 'LLVM Language Reference Manual': compiler/llvm/llvm-lang-ref.md
+        - 'LLVM Language Reference Manual - Instruction Reference': compiler/llvm/llvm-lang-ref-instructions.md
       - JVM:
         - Home: compiler/jvm/index.md
         - 'JavaCC': compiler/jvm/javacc.md

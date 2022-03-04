@@ -3,7 +3,8 @@
 
 |时间|内容|
 |:---|:---|
-|20210818|kick off.|
+|2021-08-18| kick off. |
+|2022-03-04| update: LLVM IR information in Chapter 5. |
 
 ## 术语
 
@@ -107,51 +108,156 @@ Type
 
 ### 5. The LLVM Intermediate Representation
 
+> The LLVM Intermediate Representation (IR) is the backbone that connects frontends and backends, allowing LLVM to parse multiple source languages and generate code to multiple targets.
+
+#### 5.1 Overview
+
 LLVM IR有三种等价形式:
 
 - 内存中表示: `Instruction`类等;
 - 磁盘上空间紧凑形式的表示: bitcode文件 `*.bc`;
 - 磁盘上可读文本形式的表示: LLVM汇编文件 `*.ll`.
 
-```
-// file: sum.c
-clang sum.c -emit-llvm -c -o sum.bc
-clang sum.c -emit-llvm -S -c -o sum.ll
-llvm-as sum.ll -o sum.bc
-llvm-dis sum.bc -o sum.ll
-llvm-extract -func=sum sum.bc -o sum-fn.bc
+##### Understanding the LLVM IR target dependency
+
+> The LLVM IR is designed to be as target-independent as possible, but it still conveys some target-specific aspects.
+
+#### 5.2 Exercising basic tools to manipulate the IR formats
+
+示例文件: `IR/sum.c`
+
+``` c
+int sum(int a, int b) {
+  return a + b;
+}
 ```
 
-LLVM IR language syntax: [LLVM Language Reference Manual](https://llvm.org/docs/LangRef.html)
+- 使用Clang生成bitcode文件: `clang sum.c -emit-llvm -c -o sum.bc`
+- 使用Clang生成汇编文件: `clang sum.c -emit-llvm -S -c -o sum.ll`
+- 汇编汇编文件, 生成bitcode文件: `llvm-as sum.ll -o sum.bc`
+- 反汇编: `llvm-dis sum.bc -o sum.ll`
+- 从IR module中提取IR functions, globals或删除globals: `llvm-extract -func=sum sum.bc -o sum-fn.bc`
+
+#### 5.3 Introducing the LLVM IR language syntax
+
+==组织结构==
+
+整个文件(`*.bc`或`*.ll`)称为一个LLVM module, 每个module中包含一组function, 每个function中包含一组basic block, basic block中包含一组instruction.
+
+module中的辅助实体: global variables, target data layout, external function prototypes, data structure declarations.
 
 - module: `Module`
 - functions: `Function`
-- basic blocks: `BasicBlock`, function body is explicitly divided into basic blocks
+- basic blocks(BBs): function body is explicitly divided into basic blocks, and a label is used to start a new BB. A basic block is a sequence of instructions with a single entry point at its first instruction, and a single exit point at its last instruction. `BasicBlock`
 - instructions: `Instruction`
-- peripheral entities: global variables(prefixed with `@`), target data layout, external function prototypes, data structure declarations
-- use the SSA(Static Single Assignment) form: `Value`, `User`
-- organized codes as three-address instructions
-- has an infinite number of registers
-- local variable: prefixed with `%`
+- global variable: prefixed with `@`
+- local variable: the analogs of the registers in the assembly language, prefixed with `%`
+
+fundamental properties:
+
+- use the SSA(Static Single Assignment) form: `Value`, `User`,
+- organized codes as three-address instructions,
+- has an infinite number of registers.
+
+==实体定义==
+
+> example from Ubuntu 20.04 on Windows; clang version 10.0.0-4ubuntu1, Target: x86_64-pc-linux-gnu
+
+- target datalayout, target tripe
+
+target datalayout包含edianess和类型大小信息
+
+``` llvm
+; e: little-endian
+; type information: type:<size>:<abi>:<preferred>
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+; processor: x86_64
+target triple = "x86_64-pc-linux-gnu"
+```
+
+- types
+
+``` llvm
+i32
+i64
+i128
+float
+double
+
+; vector types
+<<# elements> x <elementtype>>
+<4 x i32> ; a vector with 4 i32 elements
+```
+
+- function declaration: closely follows the C syntax
 
 ```
-target datalayout: type:<size>:<abi>:<preferred>
-target triple
-
-define i32 @sum(i32 %a, i32 %b) #0 {
-attributes #0 = {
+define dso_local i32 @sum(i32 %0, i32 %1) #0 {
 ```
 
-- types: `i32`, `i64`, `i128`, `float`, `double`, vectors `<<# elements> x <elementtype>>`
+- function attributes
 
+`#0` tag in the function declaration maps to a set of function attributes.
+
+``` llvm
+attributes #0 = { noinline nounwind optnone uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+```
+
+- basic block
+
+> no label at the first instruction here.
+
+``` llvm
+;define dso_local i32 @sum(i32 %0, i32 %1) #0 {
+  %3 = alloca i32, align 4
+  %4 = alloca i32, align 4
+  store i32 %0, i32* %3, align 4
+  store i32 %1, i32* %4, align 4
+  %5 = load i32, i32* %3, align 4
+  %6 = load i32, i32* %4, align 4
+  %7 = add nsw i32 %5, %6
+  ret i32 %7
+;}
+```
+
+##### Introducing the LLVM IR in-memory model
+
+> The header files for the C++ classes that represent the IR are located at `include/llvm/IR`.
+
+``` c++
+Module
+Function
+BasicBlock
+Instruction
+```
+
+In the LLVM in-memory IR:
+
+- a class that inherites from `Value` means that it defines a result that can be used by others,
+- a subclass of `User` means that this entity uses one or more `Value` interfaces.
+
+#### 5.4 Writing a custom LLVM IR generator
+##### Building and running the IR generator
+##### Learning how to write code to generate any IR construct with the C++ backend
 
 Generating the C++ source code needed to generate the same IR file for a given LLVM IR file(bitcode or assembly):
 
-> has been removed!!!
+> cpp target is not in llc --version.
 
+``` console
+$ llc -march=cpp sum.bc -o sum.cpp
+llc: error: error: invalid target 'cpp'.
 ```
-llv -march=cpp sum.bc -o sum.cpp
-```
+
+#### 5.5 Optimizing at the IR level
+##### Compile-time and link-time optimizations
+##### Discovering which passes matter
+##### Understanding pass dependencies
+##### Understanding the pass API
+##### Writing a custom pass
+##### Building and running your new pass with the LLVM build system
+##### Building and running your new pass with your own Makefile
+#### 5.6 Summary
 
 ### 6. The Backend
 
