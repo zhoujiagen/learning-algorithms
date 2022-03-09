@@ -3,7 +3,7 @@
 
 |时间|内容|
 |:---|:---|
-|20210902|kick off.|
+|2021-09-02|kick off.|
 
 ## 术语
 
@@ -23,6 +23,11 @@
 
 ### 1. Introducing Flex and Bison
 
+
+#### Lexical Analysis and Parsing
+
+#### Regular Expressions and Scanning
+
 Flex example: `ex_wc.l`
 
 ```
@@ -41,19 +46,57 @@ int lines = 0;
 
 %%
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   yylex();
   printf("%8d%8d%8d\n", lines, words, chars);
 }
 ```
 
-- `%%`: flex程序由三部分构成, 按`%%`分隔;
-- 声明段中的`%{%}`中代码, 会直接拷贝到生成的C代码中(例如`lex.yy.c`);
-- 模式段中以模式开启一行, 动作(action)`{}`中包含C代码(单个语句或语句块);
-- `yytext`: 指向匹配模式的输入文本的变量;
+- `%%`: flex程序由三部分构成(定义段、规则段和用户例程), 按`%%`分隔;
+- 定义段中的`%{ %}`中代码, 会直接拷贝到生成的C代码中(例如`lex.yy.c`);
+- 规则段中以模式开启一行, 动作(action)`{}`中包含C代码(单个语句或语句块);
+- 变量`yytext`: 指向匹配模式的输入文本;
 - `yylex()`: 由flex提供给扫描器程序的函数. 如果在动作中使用了`return`, 扫描在下一次调用`yylex()`时恢复; 如果没有使用`return`, 扫描立即恢复;
-- `yylval`: flex扫描器返回token的流, token有编号(`enum yytokentype`)和值(`yylval`).
+
+```
+"+"     { return ADD; }
+[0-9]+  { return NUMBER; }
+[ \t]   { /* ignore whitespace */ }
+```
+
+flex扫描器返回token的流, token有编号(整数)和值.
+
+```
+%{
+  enum ttotkentype {
+    NUMBER = 258,
+    ADD = 259
+    /* ... */
+  };
+
+  int yylval;
+%}
+
+%%
+"+" { return ADD; }
+[0-9]+ {yylval = atoi(yytext); return NUMBER; }
+/* ... */
+
+%%
+int main(int argc, char **argv) {
+  int tok;
+
+  while (tok = yylex()) {
+    printf("%d", tok);
+    if (tok == NUMBER) printf(" = %d\n", yylval);
+    else printf("\n");
+  }
+
+  return 0;
+}
+```
+
+#### Grammars and Parsing
 
 BNF(Backus-Naur Form)是编写CFG(Context-Free Grammar)的标准形式, 例:
 
@@ -67,6 +110,8 @@ BNF(Backus-Naur Form)是编写CFG(Context-Free Grammar)的标准形式, 例:
 Bison example: `ex_calc.y`, `ex_calc.l`
 
 ```
+/* ex_calc.y */
+
 /* simple version of calculator */
 %{
 #include <stdio.h>
@@ -101,19 +146,35 @@ term: NUMBER
   ;
 
 %%
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   printf("> ");
   yyparse();
 }
 
-void yyerror(char *s)
-{
+void yyerror(char *s) {
   fprintf(stderr, "error: %s\n", s);
 }
 ```
 
+- bison程序由三部分构成: 定义段、规则段和用户例程段.
+- `%token` token声明告知bison这些符号是token.
+- 未声明为token的符号必须在程序中至少一条规则的LHS中出现.
+- 规则中每个符号都有值, `:`左侧的目标符号值为`$$`, `:`右侧的符号依次为`$1`、`$2`...
+
+
+同时编译flex和bison程序:
+
+``` shell
+bison -d ex_calc.y  # *.tab.h, *.tab.c
+flex -o ex_calc.lex.c ex_calc.l
+cc -o ex_calc ex_calc.tab.c ex_calc.lex.c -lfl
 ```
+
+- 包含bison创建的文件`ex_calc.tab.h`, 内有token编号定义和`yylval`的定义.
+
+```
+/* ex_calc.l */
+
 %{
 /* use tokens defined in bison */
 #include "ex_calc.tab.h"
@@ -138,7 +199,45 @@ void yyerror(char *s)
 %%
 ```
 
+#### Ambiguous Grammars: Not Quite
+
+例: 运算符优先级导致的歧义
+
+```
+exp: exp ADD exp
+  | exp SUB exp
+  | exp MUL exp
+  | exp DIV exp
+  | ABS exp
+  | NUMBER
+  ;
+```
+
+#### Adding a Few More Rules
+
+```
+%token OP CP
+%%
+term: NUMBER
+  | ABS term  { $$ = $2 >= 0 ? $2 : - $2; }
+  | OP exp CP { $$ = $2; }
+  ;
+```
+
+```
+"("     { return OP; }
+")"     { return CP; }
+"//".*  /* ignore comments */
+```
+
+
+#### Flex and Bison vs. Handwritten Scanners and Parsers
+
 ### 2. Using Flex
+
+#### Regular Expressions
+
+> A **regular expression** is a pattern description using a **metalanguage**, a language that you use to describe what you want the pattern to match.
 
 Flex's regular expression language:
 
@@ -180,22 +279,137 @@ Example: Fortran-style numbers
 [a-zA-Z_][a-zA-Z0-9_]*  { return IDENTIFIER; }
 ```
 
+#### File I/O in Flex Scanners
+
 Flex扫描器中的文件I/O:
 
 - `yyin`: 除非有其他安排, 扫描器从`FILE yyin`中读取内容, 默认为`stdin`; 需要读取文件时, 在首次调用`yylex()`之前设置`yyin`.
-- `%option noyywrap`: 当扫描器达到`yyin`的尾部时, 会调用`yywrap()`以调整`yyin`并恢复扫描; `noyywrap`关闭这一特性.
+
+``` c
+int main(int argc, char **argv) {
+    if (argc > 1) {
+        if (!(yyin = fopen(argv[1], "r"))) {
+            perror(argv[1]);
+            return 1;
+        }
+    }
+
+    yylex();
+
+    return 0;
+}
+```
+
+- `%option noyywrap`: 当lex扫描器达到`yyin`的尾部时, 会调用`yywrap()`以调整`yyin`并恢复扫描; `noyywrap`关闭这一特性.
+
+#### Reading Several Files
+
 - `yyrestart(f)`: 告知扫描器读取文件`f`, `YY_NEW_FILE`等价于`yyrestart(yyin)`.
-- 输入: 三层输入系统. <br/>
-(1) 设置`yyin`为所需读取的文件;<br/>
-(2) 创建和使用`YY_BUFFER_STATE`输入缓冲区: `YY_BUFFER_STATE bp = yy_create_buffer(yyin, YY_BUF_SIZE)`, `yy_switch_to_buffer(bp);`<br/>
-(3) 重定义`YY_INPUT`: `#define YY_INPUT(buf, result, max_size) ...`.
-- 输出: 动作代码中可以使用宏`input()`和`unput()`, 分别是返回输入流中的下一个字符、将字符放回到输入流中.
-- `%option nodefault`: 关闭无匹配模式时的`ECHO`特性(`#define ECHO fwrite(yytext, yyleng, 1, yyout)`).
+
+``` c hl_lines="16"
+int main(int argc, char **argv) {
+    int i;
+    if (argc < 2) { /* read fron stdin*/
+        yylex();
+        return 0;
+    }
+
+    // 对每个文件: 打开文件, 使用yyrestart()将其作为扫描器的输入, 调用yylex()扫描
+    for (i = 1; i < argc; i++) {
+        FILE *f = fopen(argv[i], "r");
+        if (!f) {
+            perror(argv[i]);
+            return 1;
+        }
+
+        yyrestart(f);
+        yylex();
+        fclose(f);
+    }
+}
+```
+
+#### The I/O Structure of a Flex Scanner
+
+##### Input to a Flex Scanner
+
+> 内容比较杂乱.
+
+flex扫描器处理输入的数据结构: `YY_BUFFER_STATE`, 包含了一个字符串缓冲和一组变量和标记, 描述单个输入源(文件或内存中字符串).
+
+flex扫描器的默认行为:
+
+``` c
+YY_BUFFER_STATE bp;
+extern FILE* yyin;
+
+if (!yyin) yyin = stdin;  // default input is stdin
+bp = yy_create_buffer(yyin, YY_BUF_SIZE);
+yy_switch_to_buffer(bp);  // tell the scanner to use this buffer
+
+yylex();                  // call the scanner
+```
+
+其他创建扫描器缓冲的方法:
+
+```
+yy_scan_string("string")
+yy_scan_buffer(char *base, size)
+```
+
+flex读取输入到当前缓冲的宏: 每当扫描器输入缓冲为空时, 调用`YY_INPUT`
+
+``` c
+#define YY_INPUT(buf, result, max_size) ...
+```
+
+三层输入管理:
+
+- (1) 设置`yyin`为所需读取的文件;
+- (2) 创建和使用`YY_BUFFER_STATE`输入缓冲区;
+- (3) 重定义`YY_INPUT`.
+
+flex提供了两个可以在规则动作中使用的宏:
+
+- `input()`: 返回输入流中的下一字符,
+- `unput(c)`: 将字符`c`放回到输入流中.
+
+##### Flex Scanner Output
+
+默认将无匹配的输入写入`yyout`: 使用`%option nodefault`关闭这一特性
+
+```
+.       ECHO;
+
+#define ECHO fwrite(yytext, yyleng, 1, yyout)
+```
+
+#### Start States and Nested Input Files
+
+Example: a simple program that handles nested include files and prints them out.
+
+> ch02_using_flex/ex_c_include.l
+
+开始状态(start states): 控制能够匹配的模式.
+
+- `%x IFILE`: 标记`IFILE`为独占的(exclusive)开始状态, 独占的含义是当状态活跃时, 只有标记了该状态的模式可以用于匹配.
+- `%s`: 表示包含的(inclusive)开始状态.
+- `BEGIN IFILE`: 在规则动作代码中使用`BEGIN`宏切换到不同的开始状态.
+
+misc notes:
+
 - `yyterminate()`: 立即从扫描器返回.
+- `<<EOF>>`: 特殊模式, 匹配输入文件尾部.
+- `yylineno`: flex提供的跟踪行号的变量.
+- `INITIAL`: 初始状态.
 
-开始状态(start states):
+#### Symbol Tables and a Concordance Generator
 
-- `%x IFILE`: 标记`IFILE`为独占的(exclusive)开始状态, 独占的含义是当状态活跃时, 只有标记了该状态的模式可以用于匹配. `%s`表示包含的(inclusive)开始状态.
+> ch02_using_flex/sym_tbl.h, ch02_using_flex/ex_word_concordance.l
+
+#### C Language Cross-Reference
+
+> ch02_using_flex/ex_c_cross_reference.l
 
 ### 3. Using Bison
 

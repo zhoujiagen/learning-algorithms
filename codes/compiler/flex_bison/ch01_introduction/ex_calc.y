@@ -32,13 +32,13 @@ term: NUMBER
   ;
 
 %%
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   printf("> ");
   yyparse();
+
+  return 0;
 }
 
-void yyerror(char *s)
-{
+void yyerror(char *s) {
   fprintf(stderr, "error: %s\n", s);
 }

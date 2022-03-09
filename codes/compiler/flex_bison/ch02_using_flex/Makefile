@@ -4,6 +4,7 @@ LD_FLAG = -lfl
 # TARGET_FLEX = ex_wc_file
 # TARGET_FLEX = ex_wc_files
 # TARGET_FLEX = ex_c_include
+# TARGET_FLEX = ex_word_concordance
 TARGET_FLEX = ex_c_cross_reference
 
 $(TARGET_FLEX): $(TARGET_FLEX).l

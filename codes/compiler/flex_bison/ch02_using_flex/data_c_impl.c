@@ -4,13 +4,13 @@
 
 int add(int a, int b)
 {
-    return a + b;
+	return a + b; 
 }
 
 int main(int argc, char **argv)
 {
-    printf("%d\n", add(1,2));
-    printf("%d\n", sub(2,1));
+	printf("%d\n", add(1, 2));
+	printf("%d\n", sub(2, 1));
 
-    return 0;
+	return 0;
 }

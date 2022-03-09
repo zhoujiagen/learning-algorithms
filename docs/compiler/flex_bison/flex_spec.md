@@ -1,8 +1,8 @@
 # 5. A Reference for Flex Specifications
 
-## 5.1 程序结构
+## 5.1 Flex规格描述的结构
 
-Flex程序由三部分构成:
+Flex程序由三部分构成: 定义段、规则段、用户例程
 
 ```
 <definition section>
@@ -12,12 +12,14 @@ Flex程序由三部分构成:
 <user subroutines>
 ```
 
-## 5.2 定义部分
+各段之间用`%%`分隔. 前两个段是必须的, 段可以为空. 第三段和前缀的`%%`可以省略.
+
+## 5.2 定义段
 
 - 包含: 选项(option)、字面量块(literal block)、定义(definition)、开始条件(start condition)和翻译(translation).
 - 以空白符开始的行被拷贝到C文件中.
 
-## 5.3 规则部分
+## 5.3 规则段
 
 - 包含: 模式行(pattern line)和C代码.
 - 以空白符开始的行、被包裹在`%{`和`%}`中的内容是被拷贝到`yylex()`中的C代码.
@@ -37,7 +39,7 @@ Flex程序由三部分构成:
 - 规则中调用的例程;
 - 重定义`yywrap()`时的支持例程等.
 
-## 5.5 Features
+## 5.5 特性
 
 ### (1) `BEGIN`
 

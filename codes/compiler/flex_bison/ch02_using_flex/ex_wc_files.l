@@ -15,19 +15,17 @@
 .               { chars++; }
 
 %%
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     int i;
     if (argc < 2) { /* read fron stdin*/
         yylex();
         printf("%8d%8d%8d\n", lines, words, chars);
+        return 0;
     }
 
-    for (i = 1; i < argc; i++)
-    {
+    for (i = 1; i < argc; i++) {
         FILE *f = fopen(argv[i], "r");
-        if (!f)
-        {
+        if (!f) {
             perror(argv[i]);
             return 1;
         }
@@ -42,8 +40,7 @@ int main(int argc, char **argv)
         totlines += lines; lines = 0;
     }
 
-    if (argc > 1)
-    {
+    if (argc > 1) {
         printf("%8d%8d%8d total\n", totlines, totwords, totchars);
     }
     

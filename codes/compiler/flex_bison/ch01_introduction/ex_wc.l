@@ -13,8 +13,9 @@ int lines = 0;
 
 %%
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   yylex();
   printf("%8d%8d%8d\n", lines, words, chars);
+
+  return 0;
 }

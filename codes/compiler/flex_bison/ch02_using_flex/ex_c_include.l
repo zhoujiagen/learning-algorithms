@@ -3,8 +3,7 @@
 %x IFILE
 
 %{
-    struct bufstack
-    {
+    struct bufstack {
         struct bufstack *prev;      /* previous entry */
         YY_BUFFER_STATE bs;         /* saved buffer */
         int lineno;                 /* saved line number */
@@ -41,31 +40,25 @@
 .                               { ECHO; }
 
 %%
-int main(int argc, char **argv)
-{
-    if (argc < 2)
-    {
+int main(int argc, char **argv) {
+    if (argc < 2) {
         fprintf(stderr, "need filename\n");
         return 1;
     }
-    if (newfile(argv[1]))
-    {
+    if (newfile(argv[1])) {
         yylex();
     }
 }
 
-int newfile(char *fn)
-{
+int newfile(char *fn) {
     FILE *f = fopen(fn, "r");
     struct bufstack *bs = malloc(sizeof(struct bufstack));
 
-    if (!f)
-    {
+    if (!f) {
         perror(fn);
         return 0;
     }
-    if (!bs) 
-    {
+    if (!bs) {
         perror("malloc");
         exit(1);
     }
@@ -84,8 +77,7 @@ int newfile(char *fn)
     return 1;
 }
 
-int popfile(void)
-{
+int popfile(void) {
     struct bufstack *bs = curbs;
     struct bufstack *prevbs;
 
