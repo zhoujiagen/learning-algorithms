@@ -31,6 +31,16 @@
 %start root
 
 %%
+root: /* nothing */
+    | root stmt EOL                                 { if (debug) dumpast($2, 0);
+                                                      printf("= %4.4g\n> ", eval($2)); 
+                                                      treefree($2);
+                                                    }
+    | root LET NAME '(' symlist ')' '=' list EOL    { dodef($3, $5, $8); 
+                                                      printf("Defined %s\n> ", $3->name); }
+    | root error EOL                                { yyerrok; printf("> "); }
+    ;
+
 stmt: IF exp THEN list                  { $$ = newflow('I', $2, $4, NULL); }
     | IF exp THEN list ELSE list        { $$ = newflow('I', $2, $4, $6); }
     | WHILE exp DO list                 { $$ = newflow('W', $2, $4, NULL); }
@@ -66,17 +76,6 @@ explist: exp
 
 symlist: NAME                           { $$ = newsymlist($1, NULL); }
     | NAME ',' symlist                  { $$ = newsymlist($1, $3); }
-    ;
-
-root: /* nothing */
-    | root stmt EOL                                 { 
-                                                        if (debug) dumpast($2, 0);
-                                                        printf("= %4.4g\n> ", eval($2)); 
-                                                        treefree($2);
-                                                    }
-    | root LET NAME '(' symlist ')' '=' list EOL    { dodef($3, $5, $8); 
-                                                      printf("Defined %s\n> ", $3->name); }
-    | root error EOL                                { yyerrok; printf("> "); }
     ;
 
 %%

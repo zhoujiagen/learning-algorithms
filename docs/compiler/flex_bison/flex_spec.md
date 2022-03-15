@@ -51,7 +51,7 @@ BEGIN statename;
 
 扫描器从状态0(`INITIAL`)开始, 其他状态必须在定义部分的`%s`或`%x`行中命名.
 
-### (2) Context sensitivity
+### (2) 上下文敏感性
 
 提供了一些方法处理模式与左右上下文敏感的情况.
 
@@ -119,9 +119,9 @@ abc/de
 abcde   { yyless(3); }
 ```
 
-### (3) Definitions/Subsitutions
+### (3) 定义/置换
 
-定义或置换允许给正则表达式命名, 并在规则部分中通过该名称引用. 名称`NAME`可以包含字母、数字、`-`和`_`, 但不能以数字开始.
+定义或置换(Subsitutions)允许给正则表达式命名, 并在规则部分中通过该名称引用. 名称`NAME`可以包含字母、数字、`-`和`_`, 但不能以数字开始.
 
 ```
 NAME expression
@@ -143,7 +143,7 @@ DIG       [0-9]
 
 在flex中, 输入文本不匹配任何模式的默认动作是将该文本输出, 等价于`ECHO`. 而`%option nodefault`或命令行中`-s`或`--nodefault`标记, 将默认动作改为中止(abort).
 
-### (5) Input Management
+### (5) 输入管理
 
 在程序开始的地方, 可以赋值`yyin`任何打开的stdio文件, 让扫描器从该文件读取.
 
@@ -222,7 +222,7 @@ Flex使用宏`YY_INPUT(buf, result, max_size)`读取输入到缓冲中.
 
 重定义`YY_INPUT`的场景有读取不是字符串或stdio文件的输入源.
 
-### (6) Flex Library
+### (6) Flex库
 
 在`cc`命令行中使用`-lfl`链接flex库. 库中包含了`main()`和`yywrap()`:
 
@@ -235,20 +235,20 @@ main(int ac, char **av)
 int yywrap() { return 1; }
 ```
 
-### (7) Interactive and Batch Scanners
+### (7) 交互式和批量式扫描器
 
 Flex扫描器有时需要在输入中前瞻一个字符以确定当前token是否已完成.
 
 - 批模式: 总是前瞻, `%option batch`;
 - 交互模式: 只在需要时前瞻, `%option interactive`.
 
-### (8) Line Numbers and `yylineno`
+### (8) 行号和`yylineno`
 
 如果设置了`%option yylineno`, flex定义包含当前行号的`yylineno`.
 
 词法器并不初始化`yylineno`, 所以需要在开始读取文件时将其赋值为1.
 
-### (9) Literal Block
+### (9) 字面量块
 
 定义部分的字面量块是由`%{`和`%}`包裹的C代码.
 
@@ -269,7 +269,7 @@ Flex扫描器有时需要在输入中前瞻一个字符以确定当前token是�
 - 在规则部分开始处的字面量块中C代码被拷贝到`yylex()`中的在局部变量声明之后的顶部, 故可以包含更多的声明和设置代码.
 - 规则部分中其他位置的字面量块只能包含注释.
 
-### (10) Multiple Lexers in One Program
+### (10) 在一个程序中使用多个词法器
 
 处理一个程序中两个词法器的两个基本方法:
 
@@ -315,7 +315,7 @@ $ flex --outfile=foolex.c --prefix=foo foo.l
 
 这样, 生成的词法器有入口点`foolex()`, 从stdio文件`fooin`读取等.
 
-### (11) Options when Building a Scanner
+### (11) 构建扫描器时的选项
 
 Flex提供了构建扫描器的选项:
 
@@ -328,7 +328,7 @@ Flex提供了构建扫描器的选项:
 --no<name>        // 例: --noyywrap
 ```
 
-### (12) Portability of Flex Lexers
+### (12) Flex词法器的可移植性
 
 Flex词法器的可移植性体现在两个层次: 原始的flex规范、生成的C源文件.
 
@@ -346,7 +346,7 @@ Flex词法器的可移植性体现在两个层次: 原始的flex规范、生成�
 - 如果词法器使用`REJECT`, 会分配后备状态缓冲, 大小为`YY_BUF_SIZE`的4倍(64位机器上为8倍).
 - 生成的C代码使用字符编码作为词法器中表的索引. 如果源和目标机器使用不同的字符集, 词法器将不工作.
 
-### (13) Reentrant Scanners
+### (13) 可重入的扫描器
 
 通常flex扫描器将状态信息放在静态变量中, 每次调用`yylex()`会使用前一次调用的状态信息, 包括已有的输入缓冲、输入文件、开始状态等. Flex提供了`%option reentrant`和`--reentrant`, 支持多个扫描器副本同时存在.
 
@@ -440,7 +440,7 @@ Flex提供了`%option reentrant bison-bridge`, 修改了`yylex`声明, 并自动
 int yylex(YYSTYPE * yylval_param, yyscan_t yyscanner);
 ```
 
-### (14) Regular Expression Syntax
+### (14) 正则表达式语法
 
 正则表达式由表示自身的常规字符、具有特殊模式含义的元字符构成.
 
@@ -501,7 +501,7 @@ pin   { npin++; REJECT; }
 
 使用`REJECT`的扫描器通常较大且较慢.
 
-### (16) Returing Values from `yylex()`
+### (16) 从`yylex()`返回值
 
 模式匹配token时执行的动作C代码中可以包含返回语句, 从`yylex()`返回值到其调用者(通常是yacc生成的解析器). 下次`yylex()`被调用时, 扫描器继续执行.
 
@@ -509,7 +509,7 @@ pin   { npin++; REJECT; }
 
 这意味着不能仅调用`yylex()`来重启词法器, 而是使用`BEGIN INITIAL`将其重置为默认状态, 并充值输入状态使得下次调用`input()`时会开始读到新的输入. 调用`yyrestart(file)`(`file`是stdio文件), 将开始从该文件读取内容.
 
-### (17) Start States
+### (17) 开始状态
 
 在定义部分可以声明开始状态(start states):
 
@@ -597,7 +597,7 @@ sometoken   { BEGIN OTHER_STATE; yyless(0); }
 
 如果新的开始状态没有匹配到优先级比当前规则高的规则中模式, `yyless(0)`将导致无限循环.
 
-### (22) `yylex()` and `YY_DECL`
+### (22) `yylex()`, `YY_DECL`
 
 通常不使用参数调用`yylex`, 它主要通过全局变量与余下的程序交互. 宏`YY_DECL`声明了`yylex`的调用序列, 可以给它添加任何参数:
 
@@ -636,7 +636,7 @@ text    printf("Token is %s\n", yytext);
 
 调用`yyrestart(f)`设置扫描器从打开的stdio文件中读取输入.
 
-### (25) `yy_scan_string` and `yy_scan_buffer`
+### (25) `yy_scan_string`, `yy_scan_buffer`
 
 设置扫描器从内存中字符串或缓冲中读取输入.
 

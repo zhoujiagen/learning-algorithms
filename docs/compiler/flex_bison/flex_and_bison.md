@@ -413,6 +413,8 @@ misc notes:
 
 ### 3. Using Bison
 
+#### How a Bison Parser Matches Its Input
+
 Flex将输入流拆分为token, Bison将这些token逻辑的组织在一起.
 
 Bison只处理文法(grammar), 文法规则例:
@@ -427,6 +429,8 @@ expression: NUMBER '+' NUMBER
 - 几个规则可以有相同的LHS.
 - 由lexer返回的符号是终结符号(terminal symbols)或tokens; 出现在LHS中的符号是非终结符号(nonterminal symbols). 终结符号与非终结符号必须是不同的.
 
+#### Shift/Reduce Parsing
+
 移进/规约(shift/reduce)解析:
 
 - Bison处理解析时, 创建一组状态(state), 每个状态反映了一个或多个部分解析的规则中的可能位置.
@@ -439,6 +443,8 @@ Bison使用两种解析方法:
 - LALR(1): Look Ahead Left to Right with a one-token lookahead;
 - GLR: Generalized Left to Right.
 
+##### What Bison’s LALR(1) Parser Cannot Parse
+
 LALR(1)不能处理存在歧义的文法(ambiguous grammars), 在该文法中相同的输入可以匹配多个规则; <br/>也无法处理需要预读多个token的文法, 例:
 
 ```
@@ -449,14 +455,21 @@ cart_animal: HORSE | GOAT
 work_animal: HORSE | OX
 ```
 
+#### A Bison Parser
+
 Bison的规格描述由三部分构成:
 
 - (1) 定义段: 处理解析器的控制信息, 设置解析器操作的执行环境;
 - (2) 规则段: 包含解析器的规则;
 - (3) 代码段: 直接拷贝入生成的C程序中的C代码.
 
+#### Abstract Syntax Trees
+
 AST(Abstrace syntax tree): 抽象语法树, 移除了无存在意义节点的解析树.
 
+#### An Improved Calculator That Creates ASTs
+
+> ch03_using_bison/ex_calc_ast.[h|c|l|y]
 
 ```
 %union {
@@ -480,6 +493,10 @@ exp: factor
 ```
 
 - 规则中可以使用字面量的token, 例如这里的`+`和`-`.
+
+##### Literal Character Tokens
+##### Building the AST Calculator
+#### Shift/Reduce Conflicts and Operator Precedence
 
 移进/规约冲突(conflicts)与操作符优先级(operator precedence):
 
@@ -530,6 +547,32 @@ exp: exp '+' exp
 - 优先级规则适用于: (1) 表达式文法; (2) if/then/else语言构造文法中悬挂的else冲突.
 - 规则段中`%start`声明指出顶级规则.
 
+##### When Not to Use Precedence Rules
+
+在两种情况下使用优先级规则:
+
+- 表达式文法,
+- 在if/then/else语言构造中解决文法中"悬挂的else"(dangling else)冲突.
+
+#### An Advanced Calculator
+
+> ch03_using_bison/ex_adv_calc.[h|c|l|y]
+
+添加特性:
+
+- 命名变量,
+- 赋值,
+- 比较表达式,
+- 流程控制: if/then/else, while/do,
+- 内建和用户定义的函数,
+- 错误恢复.
+
+##### Advanced Calculator Parser
+##### Calculator Statement Syntax
+##### Calculator Expression Syntax
+##### Top-Level Calculator Grammar
+##### Basic Parser Error Recovery
+
 基本的解析器错误恢复:
 
 ```
@@ -544,9 +587,23 @@ calclist: /* nothing */
 ```
 
 - `error`: 特殊的伪token指示出错误恢复点;
-- 当Bison解析器遇到错误时, 开始从解析器栈中丢弃符号, 直到到达token `error`有效的点; <br/>然后丢弃输入token, 直到找到一个在当前状态可以移进的token, 并从这里继续解析; <br/> 如果解析器再次失败, 它会丢弃更多的栈符号和输入token, 直到可以恢复解析或栈为空(此时解析失败).
-- 为避免大量的错误消息, 解析器通常在首次出现错误后抑制错误消息, 直到成功移进了一行中的三个token.
+- 当Bison解析器遇到错误时
+
+开始从解析器栈中丢弃符号, 直到到达token `error`有效的点;
+
+然后丢弃输入token, 直到找到一个在当前状态可以移进的token, 并从这里继续解析;
+
+如果解析器再次失败, 它会丢弃更多的栈符号和输入token, 直到可以恢复解析或栈为空(此时解析失败).
+
+- 为避免大量的错误消息, 解析器通常在首次出现错误后抑制错误消息, 直到成功移进了一行中的3个token.
 - 宏`yyerrok`: 在动作中告知解析器恢复已完成, 后续的错误消息将会生成.
+
+##### The Advanced Calculator Lexer
+##### Reserved Words
+##### Building and Interpreting ASTs
+##### Evaluating Functions in the Calculator
+##### User-Defined Functions
+#### Using the Advanced Calculator
 
 ### 4. Parsing SQL
 

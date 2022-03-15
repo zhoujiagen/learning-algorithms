@@ -1,3 +1,5 @@
+%option noyywrap nodefault yylineno
+
 %{
 #include "ex_calc_ast.h"
 #include "ex_calc_ast.tab.h"
@@ -20,6 +22,6 @@ EXP	([Ee][-+]?[0-9]+)
 \n                      { return EOL; }
 "//".*  
 [ \t]                   { /* ignore white space */ }
-.	                    { yyerror("Mystery character %c\n", *yytext); }
+.	                      { yyerror("Mystery character %c\n", *yytext); }
 
 %%
