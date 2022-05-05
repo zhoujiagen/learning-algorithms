@@ -5,6 +5,7 @@
 |:---|:---|
 |2022-02-24| kick off. |
 |2022-03-02| skimming chapter 1 and 2. |
+|2022-05-05| skimming all. |
 
 ## 术语
 
@@ -34,6 +35,14 @@
 #### 1.6 Programming Language Basics
 #### 1.7 Summary of Chapter 1
 #### 1.8 References for Chapter 1
+
+- 1 Bergin, T. J. and R. G. Gibson, **History of Programming Languages**, ACM Press, New York, 1996.
+- 2 http://gcc.gnu.org/ .
+- 3 http://research.microsoft.com/phoenix/default.aspx .
+- 4 Hennessy, J. L. and D. A. Patterson, **Computer Organization and Design: The Hardware/Software Interface**, Morgan-Kaufmann, San Francisco, CA, 2004.
+- 5 Scott, M. L., **Programming Language Pragmatics**, second edition, MorganKaufmann, San Francisco, CA, 2006.
+- 6 Sethi, R., **Programming Languages: Concepts and Constructs**, AddisonWesley, 1996.
+- 7 Wexelblat, R. L., **History of Programming Languages**, Academic Press, New York, 1981.
 
 ### 2 A Simple Syntax-Directed Translator
 
@@ -517,127 +526,16 @@ x = y             ; copy the value of y into x
 
 #### 2.9 Summary of Chapter 2
 
-### 3 Lexical Analysis
-#### 3.1 The Role of the Lexical Analyzer
-#### 3.2 Input Buffering  
-#### 3.3 Specification of Tokens
-#### 3.4 Recognition of Tokens
-#### 3.5 The Lexical-Analyzer Generator Lex
-#### 3.6 Finite Automata
-#### 3.7 From Regular Expressions to Automata
-#### 3.8 Design of a Lexical-Analyzer Generator
-#### 3.9 Optimization of DFA-Based Pattern Matchers  
-#### 3.10 Summary of Chapter 3
-#### 3.11 References for Chapter 3
-
-### 4 Syntax Analysis
-#### 4.1 Introduction
-#### 4.2 Context-Free Grammars
-#### 4.3 Writing a Grammar
-#### 4.4 Top-Down Parsing  
-#### 4.5 Bottom-Up Parsing
-#### 4.6 Introduction to LR Parsing: Simple LR
-#### 4.7 More Powerful LR Parsers
-#### 4.8 Using Ambiguous Grammars
-#### 4.9 Parser Generators
-#### 4.10 Summary of Chapter 4  
-#### 4.11 References for Chapter 4
-
-### 5 Syntax-Directed Translation
-#### 5.1 Syntax-Directed Definitions
-#### 5.2 Evaluation Orders for SDD's  
-#### 5.3 Applications of Syntax-Directed Translation
-#### 5.4 Syntax-Directed Translation Schemes
-#### 5.5 Implementing L-Attributed SDD's  
-#### 5.6 Summary of Chapter 5
-#### 5.7 References for Chapter 5  
-
-### 6 Intermediate-Code Generation
-#### 6.1 Variants of Syntax Trees  
-#### 6.2 Three-Address Code
-#### 6.3 Types and Declarations
-#### 6.4 Translation of Expressions  
-#### 6.5 Type Checking  
-#### 6.6 Control Flow
-#### 6.7 Backpatching
-#### 6.8 Switch-Statements
-#### 6.9 Intermediate Code for Procedures  
-#### 6.10 Summary of Chapter 6
-#### 6.11 References for Chapter 6
-
-### 7 Run-Time Environments
-#### 7.1 Storage Organization  
-#### 7.2 Stack Allocation of Space
-#### 7.3 Access to Nonlocal Data on the Stack  
-#### 7.4 Heap Management  
-#### 7.5 Introduction to Garbage Collection  
-#### 7.6 Introduction to Trace-Based Collection
-#### 7.7 Short-Pause Garbage Collection
-#### 7.8 Advanced Topics in Garbage Collection
-#### 7.9 Summary of Chapter 7
-#### 7.10 References for Chapter 7
-
-### 8 Code Generation
-#### 8.1 Issues in the Design of a Code Generator
-#### 8.2 The Target Language
-#### 8.3 Addresses in the Target Code  
-#### 8.4 Basic Blocks and Flow Graphs
-#### 8.5 Optimization of Basic Blocks
-#### 8.6 A Simple Code Generator
-#### 8.7 Peephole Optimization  
-#### 8.8 Register Allocation and Assignment  
-#### 8.9 Instruction Selection by Tree Rewriting  
-#### 8.10 Optimal Code Generation for Expressions
-#### 8.11 Dynamic Programming Code-Generation
-#### 8.12 Summary of Chapter 8  
-#### 8.13 References for Chapter 8  
-
-### 9 Machine-Independent Optimizations
-#### 9.1 The Principal Sources of Optimization
-#### 9.2 Introduction to Data-Flow Analysis
-#### 9.3 Foundations of Data-Flow Analysis  
-#### 9.4 Constant Propagation  
-#### 9.5 Partial-Redundancy Elimination
-#### 9.6 Loops in Flow Graphs
-#### 9.7 Region-Based Analysis
-#### 9.8 Symbolic Analysis
-#### 9.9 Summary of Chapter 9
-#### 9.10 References for Chapter 9
-
-### 10 Instruction-Level Parallelism
-#### 10.1 Processor Architectures
-#### 10.2 Code-Scheduling Constraints
-#### 10.3 Basic-Block Scheduling
-#### 10.4 Global Code Scheduling
-#### 10.5 Software Pipelining
-#### 10.6 Summary of Chapter 10  
-#### 10.7 References for Chapter 10
-
-### 11 Optimizing for Parallelism and Locality  
-#### 11.1 Basic Concepts
-#### 11.2 Matrix Multiply: An In-Depth Example
-#### 11.3 Iteration Spaces
-#### 11.4 Affine Array Indexes  
-#### 11.5 Data Reuse
-#### 11.6 Array Data-Dependence Analysis
-#### 11.7 Finding Synchronization-Free Parallelism
-#### 11.8 Synchronization Between Parallel Loops
-#### 11.9 Pipelining
-#### 11.10 Locality Optimizations
-#### 11.11 Other Uses of Affine Transforms  
-#### 11.12 Summary of Chapter 11
-#### 11.13 References for Chapter 11
-
-### 12 Interprocedural Analysis  
-#### 12.1 Basic Concepts  
-#### 12.2 Why Interprocedural Analysis?
-#### 12.3 A Logical Representation of Data Flow  
-#### 12.4 A Simple Pointer-Analysis Algorithm
-#### 12.5 Context-Insensitive Interprocedural Analysis
-#### 12.6 Context-Sensitive Pointer Analysis
-#### 12.7 Datalog Implementation by BDD's
-#### 12.8 Summary of Chapter 12
-#### 12.9 References for Chapter 12
+### [3 Lexical Analysis](dragon-book/dragon-03-Lexical-Analysis.md)
+### [4 Syntax Analysis](dragon-book/dragon-04-Syntax-Analysis.md)
+### [5 Syntax-Directed Translation](dragon-book/dragon-05-Syntax-Directed-Translation.md)
+### [6 Intermediate-Code Generation](dragon-book/dragon-06-Intermediate-Code-Generation.md)
+### [7 Run-Time Environments](dragon-book/dragon-07-Run-Time-Environments.md)
+### [8 Code Generation](dragon-book/dragon-08-Code-Generation.md)
+### [9 Machine-Independent Optimizations](dragon-book/dragon-09-Machine-Independent-Optimizations.md)
+### [10 Instruction-Level Parallelism](dragon-book/dragon-10-Instruction-Level-Parallelism.md)
+### [11 Optimizing for Parallelism and Locality](dragon-book/dragon-11-Optimizing-for-Parallelism-and-Locality.md)
+### [12 Interprocedural Analysis](dragon-book/dragon-12-Interprocedural-Analysis.md)
 
 ### A  A Complete Front End
 #### A.1 The Source Language

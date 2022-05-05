@@ -23,7 +23,18 @@ nav:
       - 'Volume 3: Sorting and Searching': TACP/TACP-vol3.md
     - Compiler:
       - 'Home': compiler/index.md
-      - 'Compilers: Principles, Techniques, and Tools': compiler/Dragon-Book.md
+      - 'Compilers: Principles, Techniques, and Tools':
+        - Home: compiler/Dragon-Book.md
+        - '3 Lexical Analysis': compiler/dragon-book/dragon-03-Lexical-Analysis.md
+        - '4 Syntax Analysis': compiler/dragon-book/dragon-04-Syntax-Analysis.md
+        - '5 Syntax-Directed Translation': compiler/dragon-book/dragon-05-Syntax-Directed-Translation.md
+        - '6 Intermediate-Code Generation': compiler/dragon-book/dragon-06-Intermediate-Code-Generation.md
+        - '7 Run-Time Environments': compiler/dragon-book/dragon-07-Run-Time-Environments.md
+        - '8 Code Generation': compiler/dragon-book/dragon-08-Code-Generation.md
+        - '9 Machine-Independent Optimizations': compiler/dragon-book/dragon-09-Machine-Independent-Optimizations.md
+        - '10 Instruction-Level Parallelism': compiler/dragon-book/dragon-10-Instruction-Level-Parallelism.md
+        - '11 Optimizing for Parallelism and Locality': compiler/dragon-book/dragon-11-Optimizing-for-Parallelism-and-Locality.md
+        - '12 Interprocedural Analysis': compiler/dragon-book/dragon-12-Interprocedural-Analysis.md
       - 'References': compiler/Engineering-a-Compiler-refs.md
       - 'Flex and Bison':
         - 'Tutorial': compiler/flex_bison/flex_and_bison.md
