@@ -8,8 +8,8 @@
 
 ## Compiler
 
-- [References of Engineering a Compiler](./docs/compiler/Engineering-a-Compiler-refs.md)
 - Dragon Book: [Compilers: Principles, Techniques, and Tools](./docs/compiler/Dragon-Book.md)
+- [Engineering a Compiler](./docs/compiler/Engineering-a-Compiler.md)
 
 ### Flex, Bison
 
